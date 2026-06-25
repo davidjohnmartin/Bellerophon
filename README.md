@@ -425,8 +425,8 @@ The cheapest time to adopt Belle is **before you need it**.
 │  │  • Transform DataFrames                       │  │
 │  │  • Business logic                             │  │
 │  └───────────────────────────┬───────────────────┘  │
-│                              │ DataFrames ready      │
-│                              ▼                       │
+│                              │ DataFrames ready     │
+│                              ▼                      │
 │  ┌───────────────────────────────────────────────┐  │
 │  │  BELLE (write orchestration layer)            │  │
 │  │  • DAG resolution + parallel execution        │  │
@@ -435,8 +435,8 @@ The cheapest time to adopt Belle is **before you need it**.
 │  │  • Encryption + schema capture                │  │
 │  │  • Logging + maintenance                      │  │
 │  └───────────────────────────┬───────────────────┘  │
-│                              │                       │
-└──────────────────────────────┼───────────────────────┘
+│                              │                      │
+└──────────────────────────────┼──────────────────────┘
                                ▼
                     ┌────────────────────┐
                     │  DELTA LAKE TABLES │
@@ -558,48 +558,48 @@ Belle will:
 │                                                                     │
 │  1. %run ./bellerophon_core          ← Load framework               │
 │  2. Build DataFrames (PySpark)       ← Your ETL logic               │
-│  3. Register outputs                 ← OutputRegistry.set_output()   │
-│  4. Define TABLES_CONFIG             ← Declarative table manifest    │
-│  5. Orchestrate                      ← belle.Orchestrator().run()    │
+│  3. Register outputs                 ← OutputRegistry.set_output()  │
+│  4. Define TABLES_CONFIG             ← Declarative table manifest   │
+│  5. Orchestrate                      ← belle.Orchestrator().run()   │
 └───────────────────────────────────────┬─────────────────────────────┘
                                         │
                                         ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │  BELLEROPHON CORE                                                   │
 │                                                                     │
-│  ┌────────────┐  ┌────────────┐  ┌──────────────┐  ┌────────────┐ │
-│  │  Config    │  │ Pre-flight │  │ DAG          │  │Maintenance │ │
-│  │  Validator │  │ Validator  │  │ Visualizer   │  │ Scheduler  │ │
-│  └────────────┘  └────────────┘  └──────────────┘  └────────────┘ │
+│  ┌────────────┐  ┌────────────┐  ┌──────────────┐  ┌────────────┐   │
+│  │  Config    │  │ Pre-flight │  │ DAG          │  │Maintenance │   │
+│  │  Validator │  │ Validator  │  │ Visualizer   │  │ Scheduler  │   │
+│  └────────────┘  └────────────┘  └──────────────┘  └────────────┘   │
 │                                                                     │
-│  ┌──────────────────────────────────────────────────────────────┐  │
-│  │  ORCHESTRATOR                                                │  │
-│  │  • Build DAG from dependencies                               │  │
-│  │  • Sort into parallel stages                                 │  │
-│  │  • ThreadPoolExecutor per stage                              │  │
-│  │  • Persist/unpersist lifecycle                               │  │
-│  │  • Retry handler (exponential backoff)                       │  │
-│  │  • Progress tracker (visual ETA)                             │  │
-│  └──────────────────────────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │  ORCHESTRATOR                                                │   │
+│  │  • Build DAG from dependencies                               │   │
+│  │  • Sort into parallel stages                                 │   │
+│  │  • ThreadPoolExecutor per stage                              │   │
+│  │  • Persist/unpersist lifecycle                               │   │
+│  │  • Retry handler (exponential backoff)                       │   │
+│  │  • Progress tracker (visual ETA)                             │   │
+│  └──────────────────────────────────────────────────────────────┘   │
 │                         │                                           │
 │                         ▼                                           │
-│  ┌──────────────────────────────────────────────────────────────┐  │
-│  │  MATERIALISE DATAFRAME                                       │  │
-│  │  • Load mode router (full/merge/insert/fast/partition)       │  │
-│  │  • Schema capture + drift detection                          │  │
-│  │  • Encryption (AES-256, per-column)                          │  │
-│  │  • Delta write (saveAsTable / merge / insertInto)            │  │
-│  │  • OOM recovery wrapper (resilient_materialise_table)        │  │
-│  └──────────────────────────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │  MATERIALISE DATAFRAME                                       │   │
+│  │  • Load mode router (full/merge/insert/fast/partition)       │   │
+│  │  • Schema capture + drift detection                          │   │
+│  │  • Encryption (AES-256, per-column)                          │   │
+│  │  • Delta write (saveAsTable / merge / insertInto)            │   │
+│  │  • OOM recovery wrapper (resilient_materialise_table)        │   │
+│  └──────────────────────────────────────────────────────────────┘   │
 │                         │                                           │
 │                         ▼                                           │
-│  ┌──────────────────────────────────────────────────────────────┐  │
-│  │  LOGGER                                                      │  │
-│  │  • One row per table write (success or failure)              │  │
-│  │  • Duration, row count, schema hash, error code/message      │  │
-│  │  • Correlation: run_id + parent_run_id (ADF linkage)         │  │
-│  │  • Auto-cleanup (configurable retention)                     │  │
-│  └──────────────────────────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │  LOGGER                                                      │   │
+│  │  • One row per table write (success or failure)              │   │
+│  │  • Duration, row count, schema hash, error code/message      │   │
+│  │  • Correlation: run_id + parent_run_id (ADF linkage)         │   │
+│  │  • Auto-cleanup (configurable retention)                     │   │
+│  └──────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
                          │
                          ▼
@@ -816,4 +816,4 @@ See [CHANGELOG.md](CHANGELOG.md) for full version history.
 
 MIT License — see [LICENSE](LICENSE) for full text.
 
-Copyright (c) 2025-2026 AXA Partners — Data Solution & Innovation Team
+Copyright (c) 2025-2026 AXA Partners — David Martin
