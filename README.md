@@ -816,4 +816,4 @@ See [CHANGELOG.md](CHANGELOG.md) for full version history.
 
 MIT License — see [LICENSE](LICENSE) for full text.
 
-Copyright (c) 2025-2026 AXA Partners — David Martin
+Copyright (c) 2025-2026 — David Martin
